@@ -22,7 +22,31 @@ lets you fill it in.
 
 ## Install
 
-Skills are plain folders with a `SKILL.md`. Symlink the ones you want:
+Every skill is a plain folder with a `SKILL.md`. Two ways in.
+
+### npx (easiest)
+
+```bash
+# see what is in here, install nothing
+npx skills@latest add wicolian/kelaskills --list
+
+# one skill
+npx skills@latest add wicolian/kelaskills --skill=stacked-prs
+
+# all of them, for every agent it finds, no prompts
+npx skills@latest add wicolian/kelaskills --all
+
+# later
+npx skills@latest update
+```
+
+Add `-g` to install at user level (`~/.claude/skills`) instead of into the
+current project. It works the same for Codex, Cursor, Copilot CLI and Gemini
+CLI — `skills` writes to whichever agent directories exist on your machine.
+
+### Symlink (if you want to edit them)
+
+Clone once, then link the ones you want:
 
 ```bash
 git clone https://github.com/wicolian/kelaskills.git ~/src/kelaskills
