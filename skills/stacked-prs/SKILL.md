@@ -131,14 +131,17 @@ The short version:
 1. **Bring the fat branch current with the trunk.** Merge the trunk in. Do not
    rebase - a month of commits will fight you.
 2. **Inventory the diff** by top-level path and size.
-3. **Write a layer plan** - a text file, one line per layer, bottom to top:
+3. **Measure the import direction between candidate layers** - do not assume it.
+   Both directions means a cycle, and a cycle means one layer.
+4. **Write a layer plan** - a text file, one line per layer, bottom to top:
    `<branch-name><TAB><pathspecs>`. Order it so each layer builds without the
    ones above it: config and toolchain, then leaf packages, then their consumers,
-   then deletions and renames.
-4. **Carve** with `scripts/carve-stack.sh`. For each layer it branches off the
+   then deletions and renames. Backend work has its own ladder - see
+   `references/backend-layers.md`.
+5. **Carve** with `scripts/carve-stack.sh`. For each layer it branches off the
    previous one and copies exactly those paths out of the fat branch.
-5. **Verify** both invariants below.
-6. `gh stack init` the branches bottom to top, then `gh stack submit`.
+6. **Verify** both invariants below.
+7. `gh stack init` the branches bottom to top, then `gh stack submit`.
 
 The fat branch stays untouched on disk the whole time. It is your reference copy
 and your undo.
@@ -222,6 +225,8 @@ Facts that change how you plan:
 | Squash merge on the trunk | Fine. `gh stack sync` handles the SHA rewrite. Do not rebase by hand to "help". |
 | Deep stacks | Every layer is a review someone must do. Above roughly 6 layers, reviewers stop. Fold. |
 | CI silent on every layer but the bottom | The workflow is filtered to the trunk. See Step 2. |
+| You based the stack on a non-default branch, then linked it | **`gh stack link` retargets the bottom PR to the repo default branch**, and GitHub then refuses to change it back: *"Cannot change the base branch because the pull request is part of a stack."* A native stack's bottom always targets the trunk. If the stack must not point at `main`, you cannot use the native stack UI - chain plain PRs instead. |
+| `commit-msg hook exited with code 1` while carving | The repo runs commitlint or husky and the generated message is not conventional. Pass `--type <feat\|fix\|chore\|refactor>` to `carve-stack.sh`. Do not reach for `--no-verify`. |
 | The fat branch after carving | Keep it. Do not delete it until the stack is merged. It is the proof of invariant 1. |
 
 ## Red flags - stop
@@ -256,6 +261,7 @@ Install if missing: `gh extension install github/gh-stack`
 ## Files
 
 - `references/carving.md` - splitting a fat branch: the full method
+- `references/backend-layers.md` - backend order: migration, contract, implementation, routing
 - `references/gh-stack.md` - command reference and flags
 - `references/manual-fallback.md` - plain git + gh, when `gh stack` is unavailable
 - `scripts/carve-stack.sh` - build the branches from a layer plan

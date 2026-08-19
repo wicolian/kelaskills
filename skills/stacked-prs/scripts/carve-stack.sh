@@ -17,7 +17,7 @@
 
 set -euo pipefail
 
-FAT=""; TRUNK=""; PLAN=""; VERIFY=""; FORCE=0; ALLOW_RM=0
+FAT=""; TRUNK=""; PLAN=""; VERIFY=""; FORCE=0; ALLOW_RM=0; CTYPE="chore"
 
 usage() { sed -n '2,20p' "$0" | sed 's/^# \{0,1\}//'; exit 1; }
 
@@ -29,6 +29,7 @@ while [ $# -gt 0 ]; do
     --verify)  VERIFY="$2"; shift 2 ;;
     --force)   FORCE=1; shift ;;
     --allow-rm) ALLOW_RM=1; shift ;;
+    --type)    CTYPE="$2"; shift 2 ;;
     -h|--help) usage ;;
     *) echo "unknown flag: $1" >&2; usage ;;
   esac
@@ -130,10 +131,15 @@ for i in $(seq 0 $((N-1))); do
   if git diff --cached --quiet; then
     echo "    WARNING: empty layer - these paths add nothing over $PARENT. Fix the plan." >&2
   else
-    git commit -q -m "$BR
-
-Carved from $FAT by path. Paths: $PS
-Layer $((i+1))/$N of a stacked PR chain onto $TRUNK."
+    # Conventional-commit shaped, body wrapped under 100 cols, so repos with
+    # commitlint or husky accept it without --no-verify.
+    { printf '%s(stack): %s\n\n' "$CTYPE" "$BR"
+      printf 'Layer %s/%s of a stacked PR chain onto %s.\n' "$((i+1))" "$N" "$TRUNK"
+      printf 'Carved from %s by path.\n\nPaths:\n' "$FAT"
+      for one in $PS; do printf -- '- %.90s\n' "$one"; done
+    } > /tmp/carve_msg.$$
+    git commit -q -F /tmp/carve_msg.$$
+    rm -f /tmp/carve_msg.$$
     git --no-pager diff --shortstat "$PARENT" HEAD | sed 's/^/    /'
   fi
 

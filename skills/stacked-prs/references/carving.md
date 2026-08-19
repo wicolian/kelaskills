@@ -82,6 +82,11 @@ Bottom to top. Each layer must build with only the layers below it.
 | n+1 | **Deletions and renames** | removing the old implementation, after every caller has moved |
 | last | **Catch-all** | whatever invariant 1 says you missed |
 
+**Backend work has a second constraint on top of import direction** - a
+migration is not dark, it changes production the moment it merges. See
+[backend-layers.md](backend-layers.md) for the migration / contract /
+implementation / routing ladder.
+
 Three rules that decide most arguments:
 
 - **A layer may only import from layers below it.** If layer 3 imports layer 5,
@@ -93,6 +98,44 @@ Three rules that decide most arguments:
 
 Target 3 to 6 layers. Above 6 the reviewers stop reading and you have made the
 problem worse.
+
+## Measure the import direction. Do not assume it.
+
+"Consumers import leaves" is a guess about the code, and on a refactor it is
+routinely wrong - the whole point of a refactor is that the arrows moved.
+
+Before you write the plan, measure each candidate pair:
+
+```bash
+A=src/lib  B=src/v2
+echo "$A -> $B:  $(git grep -lE "from '$(basename $B)/" $FAT -- $A | wc -l) files"
+echo "$B -> $A:  $(git grep -lE "from '$(basename $A)/" $FAT -- $B | wc -l) files"
+```
+
+Three outcomes:
+
+| Result | Meaning |
+|---|---|
+| one direction only | that is your order. The importer goes above. |
+| **both directions** | **a cycle. They are one layer.** Fold them. |
+| neither | independent. Order them by anything, or merge them for size. |
+
+A cycle is not a carving failure - it is the most useful thing the carve will
+tell you. Name the modules on both sides in the PR body:
+
+```bash
+comm -12 \
+  <(git grep -hoE "from '$(basename $B)/[a-zA-Z0-9/_-]+'" $FAT -- $A | sort -u) \
+  <(git grep -lE "from '$(basename $A)/" $FAT -- $B | sort -u)
+```
+
+On a real 492-file refactor this found three modules sitting on both sides of a
+`lib` <-> new-module cycle. Those three are the reason the two could not be
+separated, and breaking them is the actual next piece of work. The stack did not
+just make the diff reviewable - it measured the coupling.
+
+**The typecheck gate catches this anyway** (that is what invariant 2 is for), but
+one grep is five seconds and a wrong layer order costs a full re-carve.
 
 ## Step 4 - Write the layer plan
 
