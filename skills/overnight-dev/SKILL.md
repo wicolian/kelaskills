@@ -18,6 +18,10 @@ state).
 on a question, never leave the tree dirty, never leave the environment worse than
 you found it. When genuinely blocked, write it down and move to the next thing.
 
+If the run is long enough to cross a usage limit, load **blackout-proof** as
+well - this skill assumes something is still driving it, and a quota wall is
+exactly what stops that being true.
+
 **Deliverable:** `MORNING.md` and `qa-findings.md` at the repo root, and the dev
 environment deployed green. Both files are gitignored - they are evidence, not
 repo state.

@@ -14,6 +14,7 @@ lets you fill it in.
 |---|---|
 | [**stacked-prs**](skills/stacked-prs) | A branch is too big or too risky to land as one PR. Build a stack, or carve an existing fat branch into one. Built around GitHub's native `gh stack`. |
 | [**sync-main**](skills/sync-main) | A long-lived redesign branch has to absorb what everyone else keeps shipping to `main`, without the redesigned twins silently going stale. |
+| [**blackout-proof**](skills/blackout-proof) | A long unattended run has to survive a usage limit, a spend cap, or a crashed CLI. The watchdog, the backoff, and the handoff that means you don't lose the night. |
 | [**overnight-dev**](skills/overnight-dev) | You want a web app taken from "probably fine" to "verifiably usable" unattended, with a report waiting in the morning. |
 | [**cc-fleet**](skills/cc-fleet) | A job is bigger than one context and you want each worker visible in its own pane, not hidden in a headless subagent. |
 | [**switch-env**](skills/switch-env) | Point a local dev server at a different backend without touching `.env`, and survive the auto-restart that trips people up. |

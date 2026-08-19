@@ -138,3 +138,10 @@ Each worker is a full session with its own context. Ten workers on Opus is rough
 one worker. Spawn what the wave actually needs, not the maximum the machine will hold. On a
 24 GB machine, ten to fifteen concurrent workers plus three dev servers sits near 9 GB and
 load 2.5 - comfortable. The limit you hit first is usually concurrent test runners, not RAM.
+
+## Running a fleet longer than one quota window
+
+A fleet dies when the session driving it dies, and a usage limit kills that
+session. If the run has to outlive you going to bed, load **blackout-proof**
+before you start: it covers the watchdog that restarts an orchestrator, the
+backoff that gets through the wall, and the handoff that survives the blackout.
