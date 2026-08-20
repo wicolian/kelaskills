@@ -2,7 +2,7 @@
 # preflight.sh - refuse to go dark until the guards are real.
 # Exit 0 only when every check passes.
 set -uo pipefail
-ROOT="${WD_ROOT:-${CC_FLEET_ROOT:-$PWD}}"
+ROOT="${WD_ROOT:-${AGENT_FLEET_ROOT:-${CC_FLEET_ROOT:-$PWD}}}"
 ART="$ROOT/artifacts"
 FAIL=0
 ok()   { printf '  \033[32mPASS\033[0m  %s\n' "$1"; }

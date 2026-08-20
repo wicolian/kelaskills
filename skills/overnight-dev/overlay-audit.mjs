@@ -45,12 +45,12 @@ const withV2 = (u) =>
  * empty* and was chased as a product bug. It was not: one of those routes
  * carried 48 interactive elements whose row actions are plain `<button>`,
  * which the Radix selector cannot see. Settings pages are tabs, switches and
- * links — likewise invisible.
+ * links - likewise invisible.
  *
  * So the selector is now "things a person can click", and the Radix hooks are
  * kept only as the ordering prefix, because a known overlay trigger is still the
  * highest-yield thing to open first. A plain button that opens nothing is
- * cheap — `openAndAudit` just records no overlay and moves on — whereas a menu
+ * cheap - `openAndAudit` just records no overlay and moves on - whereas a menu
  * this never clicked is a stacking bug nobody found.
  *
  * `:not([disabled])` and the aria-disabled guard matter: clicking a disabled
@@ -149,9 +149,9 @@ const heap = (page) => page.evaluate(() =>
 const findings = [];
 const note = (f) => {
   findings.push(f);
-  const md = `\n## ${f.route} — ${f.symptom}\nclass:    ${f.class}\nrepro:    open trigger \`${f.trigger}\`\nexpected: ${f.expected}\nactual:   ${f.actual}\nevidence: ${JSON.stringify(f.evidence)}\nfix:      open\n`;
+  const md = `\n## ${f.route} - ${f.symptom}\nclass:    ${f.class}\nrepro:    open trigger \`${f.trigger}\`\nexpected: ${f.expected}\nactual:   ${f.actual}\nevidence: ${JSON.stringify(f.evidence)}\nfix:      open\n`;
   appendFileSync(LEDGER, md);
-  console.log(`  FINDING [${f.class}] ${f.symptom} — ${f.trigger}`);
+  console.log(`  FINDING [${f.class}] ${f.symptom} - ${f.trigger}`);
 };
 
 const run = async () => {
@@ -161,7 +161,7 @@ const run = async () => {
   await ctx.addInitScript(() => { try { localStorage.setItem(process.env.QA_FLAG_KEY || 'app:uiVersion', process.env.QA_FLAG_VALUE || 'v2'); } catch {} });
   const page = await ctx.newPage();
 
-  if (!existsSync(LEDGER)) writeFileSync(LEDGER, `# QA findings — ${new Date().toISOString()}\n`);
+  if (!existsSync(LEDGER)) writeFileSync(LEDGER, `# QA findings - ${new Date().toISOString()}\n`);
 
   // sign in. Override the selectors with QA_SUBMIT_SELECTOR / QA_PASSWORD_SELECTOR
   // when the two UI versions expose different sign-in buttons.
@@ -194,13 +194,13 @@ const run = async () => {
      * NAVIGATE, and one of them is fatal: a "Log out" control ends the session,
      * after which every later `goto` bounces to the marketing site and every
      * route reports the same handful of triggers. That is not a slow audit, it
-     * is a SILENTLY WRONG one — the run still prints per-route findings, and all
+     * is a SILENTLY WRONG one - the run still prints per-route findings, and all
      * of them describe the landing page. It happened, and the only reason it was
      * caught is that 13 different routes implausibly reported "15 triggers".
      *
      * So: skip the known one-way doors by label before clicking, and after every
      * click confirm we are still on the route we think we are auditing. If we
-     * left, go back and record it — never keep measuring whatever we landed on.
+     * left, go back and record it - never keep measuring whatever we landed on.
      */
     const EXIT_LABEL = /log\s*out|sign\s*out|logout|signout|help\s*center|switch\s+workspace|delete\s+account/i;
     const routePath = new URL(withV2(`${BASE}${route}`)).pathname;
@@ -285,7 +285,7 @@ const run = async () => {
      * this route was never audited and must not read as a pass. */
     console.log(`  audited ${opened}/${n} (no overlay from ${noOpen.length}${escapes ? `, ${escapes} navigated away` : ''})`);
     if (n > 0 && opened === 0) note({ route, trigger: `${n} triggers`, class: 'coverage',
-      symptom: 'no overlay opened on this route — route NOT audited',
+      symptom: 'no overlay opened on this route - route NOT audited',
       expected: 'at least one trigger opens an auditable overlay',
       actual: 'every trigger clicked, none produced a known overlay surface',
       evidence: { triggers: n, sample: noOpen.slice(0, 5), navigatedAway: escapes } });
@@ -310,9 +310,9 @@ const run = async () => {
   writeFileSync(OUT, JSON.stringify({ base: BASE, routes: ROUTES, coverage, heapTrail, findings }, null, 2));
   const totalOpened = coverage.reduce((a, c) => a + c.opened, 0);
   console.log(`\n${findings.length} finding(s) from ${totalOpened} overlay(s) audited across ${coverage.length} route(s); ledger -> ${LEDGER}, json -> ${OUT}`);
-  if (!totalOpened) console.log('WARNING: nothing was audited — 0 findings here means NOTHING WAS CHECKED.');
-  if (!valid.length) console.log('note: heap unavailable — run Chrome with --enable-precise-memory-info for numbers');
+  if (!totalOpened) console.log('WARNING: nothing was audited - 0 findings here means NOTHING WAS CHECKED.');
+  if (!valid.length) console.log('note: heap unavailable - run Chrome with --enable-precise-memory-info for numbers');
   await browser.close();
 };
 
-run().catch((e) => { console.error('overlay-audit crashed —', e.message); process.exit(2); });
+run().catch((e) => { console.error('overlay-audit crashed -', e.message); process.exit(2); });

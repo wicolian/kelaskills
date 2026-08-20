@@ -4,7 +4,7 @@
 # Purely informational - never let anything depend on parsing this.
 set -uo pipefail
 SECS="${1:-300}"
-ROOT="${WD_ROOT:-${CC_FLEET_ROOT:-$PWD}}"
+ROOT="${WD_ROOT:-${AGENT_FLEET_ROOT:-${CC_FLEET_ROOT:-$PWD}}}"
 ART="$ROOT/artifacts"
 while :; do
   clear

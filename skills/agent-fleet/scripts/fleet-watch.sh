@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Block until every spawned worker has a .done file. Prints status each interval.
 set -uo pipefail
-ROOT="${CC_FLEET_ROOT:-$PWD}"
+ROOT="${AGENT_FLEET_ROOT:-${CC_FLEET_ROOT:-$PWD}}"
 IVL="${1:-60}"
 R="$ROOT/artifacts/reports"; S="$ROOT/artifacts/panes"
 while :; do

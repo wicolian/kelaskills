@@ -1,6 +1,6 @@
-# herdr — not vendored here, on purpose
+# herdr: not vendored here, on purpose
 
-`cc-fleet` in this repo needs the **herdr** skill to be installed, but that skill
+`agent-fleet` in this repo needs the **herdr** skill to be installed, but that skill
 ships with herdr itself. It is not mine to redistribute, and a vendored copy would
 go stale on every herdr release.
 

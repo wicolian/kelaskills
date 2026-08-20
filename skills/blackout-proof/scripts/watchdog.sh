@@ -10,13 +10,15 @@
 #   3. fleet empty, work remains    -> probe quota, then restart an orchestrator
 #      quota gone                   -> exponential backoff, keep retrying
 #
-# Configure with env vars. The defaults assume a cc-fleet layout.
+# Configure with env vars. The defaults assume an agent-fleet layout.
 #
-#   WD_ROOT            programme root            (default: $CC_FLEET_ROOT or $PWD)
+#   WD_ROOT            programme root            (default: $AGENT_FLEET_ROOT or $PWD)
 #   WD_WORK_REMAINING  cmd printing an integer   (default: ledger TODO count)
 #   WD_FLEET_SIZE      cmd printing an integer   (default: running workers)
 #   WD_START           cmd that starts one orchestrator  (REQUIRED)
-#   WD_PROBE           cmd, exit 0 if quota is available (default: claude probe)
+#   WD_PROBE           custom command, exit 0 if quota is available
+#   AGENT_RUNTIME      built-in probe runtime     (default: claude-code)
+#   AGENT_PROBE_MODEL  optional cheap probe model (default: runtime default)
 #   WD_INTERVAL        seconds between checks     (default: 600)
 #   WD_MAX_RESTARTS    give up after this many    (default: 12)
 #   WD_BACKOFF_MAX     cap on blackout backoff    (default: 1800)
@@ -27,7 +29,8 @@
 
 set -uo pipefail
 
-ROOT="${WD_ROOT:-${CC_FLEET_ROOT:-$PWD}}"
+ROOT="${WD_ROOT:-${AGENT_FLEET_ROOT:-${CC_FLEET_ROOT:-$PWD}}}"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ART="$ROOT/artifacts"; mkdir -p "$ART"
 LOG="$ART/watchdog.log"
 LOCK="$ART/watchdog.lock"
@@ -77,14 +80,14 @@ trap cleanup EXIT
 
 [ -n "${WD_START:-}" ] || { log "FATAL: WD_START is not set - nothing to restart"; exit 2; }
 
-# --- defaults that fit a cc-fleet layout ------------------------------------
+# --- defaults that fit an agent-fleet layout --------------------------------
 work_remaining() {
   if [ -n "${WD_WORK_REMAINING:-}" ]; then bash -lc "$WD_WORK_REMAINING"; return; fi
   # every task that has a prompt but no .done marker
-  local total done
+  local total finished
   total=$(ls "$ROOT"/prompts/*.md 2>/dev/null | wc -l | tr -d ' ')
-  done=$(ls "$REPORTS"/*.done 2>/dev/null | wc -l | tr -d ' ')
-  echo $(( total - done ))
+  finished=$(ls "$REPORTS"/*.done 2>/dev/null | wc -l | tr -d ' ')
+  echo $(( total - finished ))
 }
 
 fleet_size() {
@@ -97,16 +100,25 @@ except Exception: print(0); raise SystemExit
 print(sum(1 for x in p if x.get("agent_status") in ("working","running")))' 2>/dev/null || echo 0
 }
 
-# Probe must be cheap and must fail *fast* when the quota is gone.
-quota_ok() {
-  if [ -n "${WD_PROBE:-}" ]; then bash -lc "$WD_PROBE" >/dev/null 2>&1; return $?; fi
-  local out
-  out=$(claude -p 'reply with exactly: ok' --model haiku 2>&1)
-  local rc=$?
-  if printf '%s' "$out" | grep -qiE 'spend limit|usage limit|rate limit|quota|too many requests|429|resets at'; then
-    return 1
+# Probe must be cheap and must fail fast when quota or authentication is gone.
+probe_state() {
+  local out rc custom=0
+  if [ -n "${WD_PROBE:-}" ]; then
+    custom=1; out=$(bash -lc "$WD_PROBE" 2>&1); rc=$?
+  else
+    out=$("$SCRIPT_DIR/probe-agent.sh" "${AGENT_RUNTIME:-claude-code}" 2>&1); rc=$?
   fi
-  return $rc
+  if printf '%s' "$out" | grep -qiE 'unauthorized|invalid api key|authentication|401|please log in|not logged in|login required'; then
+    echo auth
+  elif printf '%s' "$out" | grep -qiE 'spend limit|usage limit|rate limit|quota|too many requests|429|resets at'; then
+    echo blackout
+  elif [ "$rc" -eq 0 ]; then
+    echo ok
+  elif [ "$custom" -eq 1 ]; then
+    echo blackout
+  else
+    echo fatal
+  fi
 }
 
 # --- main loop ---------------------------------------------------------------
@@ -136,7 +148,8 @@ while :; do
     log "fleet empty but inside restart cooldown ($((cooldown_until - now))s left)"
   else
     log "fleet EMPTY with $remaining task(s) remaining - checking quota"
-    if quota_ok; then
+    probe=$(probe_state)
+    if [ "$probe" = "ok" ]; then
       if [ "$restarts" -ge "$MAX_RESTARTS" ]; then
         log "FATAL: hit max restarts ($MAX_RESTARTS). Something is crash-looping."
         log "       Not burning more quota. A human needs to look at $LOG."
@@ -147,11 +160,14 @@ while :; do
       bash -lc "$WD_START" >>"$LOG" 2>&1 &
       cooldown_until=$(( now + COOLDOWN ))
       backoff=$BACKOFF_START
-    else
+    elif [ "$probe" = "blackout" ]; then
       log "BLACKOUT: quota unavailable. backing off ${backoff}s (retry keeps going)"
       nap "$backoff"
       backoff=$(( backoff * 2 )); [ "$backoff" -gt "$BACKOFF_MAX" ] && backoff="$BACKOFF_MAX"
       continue
+    else
+      log "FATAL: agent probe failed with state '$probe'. Check authentication and runtime configuration."
+      exit 1
     fi
   fi
 

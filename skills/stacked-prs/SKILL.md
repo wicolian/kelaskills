@@ -268,5 +268,5 @@ Install if missing: `gh extension install github/gh-stack`
 - `scripts/verify-stack.sh` - check both invariants
 
 Installed from [kelaskills](https://github.com/wicolian/kelaskills). To make a
-repo-specific version, copy the folder into that repo's `.claude/skills/` and add
+repo-specific version, copy the folder into that repo's `.agents/skills/` and add
 a `references/<repo>.md` with its branches, trunk choice and verify command.

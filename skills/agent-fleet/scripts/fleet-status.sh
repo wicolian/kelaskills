@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # One line per worker: NAME  RUNNING|DONE  bytes  pane  agent_status
 set -uo pipefail
-ROOT="${CC_FLEET_ROOT:-$PWD}"
+ROOT="${AGENT_FLEET_ROOT:-${CC_FLEET_ROOT:-$PWD}}"
 R="$ROOT/artifacts/reports"; S="$ROOT/artifacts/panes"
 STATUS=$(herdr pane list 2>/dev/null | python3 -c '
 import sys,json

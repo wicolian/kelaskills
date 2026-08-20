@@ -32,7 +32,7 @@ if (!EMAIL || !PASSWORD) {
 }
 
 /* Onboarding guide steps mapped onto promoted V2_READY_ROUTES. `needsId` steps
- * are skipped unless an id is supplied — a synthetic id would 404 and read as a
+ * are skipped unless an id is supplied - a synthetic id would 404 and read as a
  * defect that is really just a bad fixture. */
 const STEPS = [
   { key: 'home',        label: 'Home / workspaces',    path: '/' },
@@ -85,7 +85,7 @@ const run = async () => {
     if (!isNoise(e.message)) bucket.pageerror.push(e.message.slice(0, 300));
   });
   page.on('requestfailed', (r) => {
-    const t = `${r.method()} ${r.url().slice(0, 160)} — ${r.failure()?.errorText}`;
+    const t = `${r.method()} ${r.url().slice(0, 160)} - ${r.failure()?.errorText}`;
     if (!isNoise(t)) bucket.request.push(t);
   });
   page.on('response', (r) => {
@@ -115,7 +115,7 @@ const run = async () => {
    * promoted, so forcing v2 changes the submit button out from under you:
    * Two UI versions often ship different submit buttons.
    * The email and password inputs are usually common to both. Accept
-   * either button rather than pinning one — this is how the first version of
+   * either button rather than pinning one - this is how the first version of
    * this script broke.
    */
   await page.fill('input[name=email]', EMAIL);
@@ -130,15 +130,15 @@ const run = async () => {
    *
    * This was `!/sign-in/.test(page.url())`, and it reported a clean run against
    * a wall. dev answers a correct password with an OTP challenge at
-   * `/users/otpVerification` — which contains no "sign-in", so the check passed,
+   * `/users/otpVerification` - which contains no "sign-in", so the check passed,
    * every one of the 14 routes then bounced to `/users/sign-in`, and the script
    * printed "0 blocked of 14" about the LOGIN PAGE. The v2 assertion below did
    * not catch it either: `V2_ROUTES.auth` is promoted, so `[data-ui="v2"]` is
    * present on the sign-in page and "redesign active: true" was also true and
    * also meaningless.
    *
-   * So the test is now positive rather than negative — we must be on a route
-   * that is NOT part of the auth flow — and it names OTP specifically, because
+   * So the test is now positive rather than negative - we must be on a route
+   * that is NOT part of the auth flow - and it names OTP specifically, because
    * "your credentials worked but a human has to type a code" is a different
    * outcome from "your password is wrong" and deserves a different message.
    */
@@ -164,7 +164,7 @@ const run = async () => {
   const isV2 = await page.evaluate(() => !!document.querySelector('[data-ui="v2"]'));
   report.v2Confirmed = isV2;
   console.log(`  ${isV2 ? 'ok  ' : 'WARN'} redesign active: ${isV2}`);
-  if (!isV2) console.log('  WARN: v2 not detected — findings below describe the OLD UI.');
+  if (!isV2) console.log('  WARN: v2 not detected - findings below describe the OLD UI.');
 
   // ---- walk the flow -------------------------------------------------------
   for (const step of STEPS) {
@@ -179,7 +179,7 @@ const run = async () => {
     }
     /*
      * Re-assert per route. A session can die mid-walk (expiry, a 401, a stray
-     * click), and every route after that silently becomes the sign-in page —
+     * click), and every route after that silently becomes the sign-in page -
      * which renders fine, is not blank, and logs no errors, so it scores as a
      * PASS. That is how this script reported "0 blocked of 14" about a login
      * wall. A bounce to auth is a failed step, not a clean one.
@@ -188,7 +188,7 @@ const run = async () => {
     if (bouncedToAuth) {
       navOk = false;
       bucket.pageerror.push(
-        `bounced to auth (${page.url()}) — session lost; this route was NOT verified`
+        `bounced to auth (${page.url()}) - session lost; this route was NOT verified`
       );
     }
 
@@ -218,4 +218,4 @@ const run = async () => {
   process.exit(blockers.length ? 1 : 0);
 };
 
-run().catch((e) => { console.error('verify-flow: crashed —', e.message); process.exit(2); });
+run().catch((e) => { console.error('verify-flow: crashed -', e.message); process.exit(2); });

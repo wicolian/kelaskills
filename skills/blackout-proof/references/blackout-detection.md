@@ -35,9 +35,9 @@ Anything else with a non-zero exit is a crash.
 
 ```bash
 classify() {
-  local out; out="$(claude -p 'reply with exactly: ok' --model haiku 2>&1)"; local rc=$?
+  local out; out="$(scripts/probe-agent.sh "${AGENT_RUNTIME:-codex}" 2>&1)"; local rc=$?
   if   printf '%s' "$out" | grep -qiE 'spend limit|usage limit|rate limit|quota|too many requests|429|resets at'; then echo wall
-  elif printf '%s' "$out" | grep -qiE 'unauthorized|invalid api key|authentication|401|please log in';            then echo auth
+  elif printf '%s' "$out" | grep -qiE 'unauthorized|invalid api key|authentication|401|please log in|not logged in'; then echo auth
   elif [ $rc -ne 0 ]; then echo crash
   else echo ok; fi
 }

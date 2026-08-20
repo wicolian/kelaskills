@@ -56,11 +56,11 @@ while :; do
 
   case "$status" in
     SUCCEED)
-      echo "watch-build: SUCCEED — ${DEPLOY_URL:-check the Amplify console}"
+      echo "watch-build: SUCCEED - ${DEPLOY_URL:-check the Amplify console}"
       echo "watch-build: next, verify the flow (force the UI flag - it is not the default)"
       exit 0 ;;
     FAILED|CANCELLED)
-      echo "watch-build: $status — failing log tail below"
+      echo "watch-build: $status - failing log tail below"
       for step in BUILD DEPLOY; do
         st=$(q get-job --app-id "$APP" --branch-name "$BRANCH" --job-id "$JOB" \
           --query "job.steps[?stepName=='$step'].status | [0]" --output text)
@@ -78,7 +78,7 @@ while :; do
   esac
 
   (( $(date +%s) > deadline )) && {
-    echo "watch-build: still $status after ${MAX_MIN}m — giving up waiting (build may still finish)" >&2
+    echo "watch-build: still $status after ${MAX_MIN}m - giving up waiting (build may still finish)" >&2
     exit 2; }
   sleep "$POLL"
 done

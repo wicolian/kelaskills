@@ -21,7 +21,7 @@ That is the whole skill. Everything below is a consequence.
 | Mechanism | Survives the session ending? | Survives herdr quitting? | Survives a reboot? |
 |---|---|---|---|
 | A background task the agent started | **no** | no | no |
-| An in-session scheduler (`CronCreate` and friends) | **no** | no | no |
+| An in-session scheduler or reminder | **no** | no | no |
 | A shell loop in a terminal pane | **yes** | no | no |
 | A `setsid` / `nohup` detached process | yes | **yes** | no |
 | A user LaunchAgent (macOS) or systemd timer | yes | yes | **yes** |
@@ -71,6 +71,11 @@ scripts/preflight.sh                  # refuse to go dark until this is green
 scripts/watchdog.sh   &               # tier 3; use install-launchd.sh for tier 5
 scripts/refresh-loop.sh 180 ./make-report.sh &
 ```
+
+Set `AGENT_RUNTIME` to `claude-code`, `codex`, `cursor`, `hermes-agent`, `pi`,
+or `t3-code`. For T3 Code, also set `T3_PROVIDER_RUNTIME` because T3 drives a
+provider CLI. Set `AGENT_PROBE_MODEL` when the runtime has a cheap model suited
+to repeated health checks. Use `WD_PROBE` for a custom provider command.
 
 The watchdog is the only one that matters if everything else dies. Keep it
 boring: a `while` loop, `sleep`, and one command. **No agent, no CLI you have not
@@ -176,6 +181,7 @@ git diff HEAD > artifacts/snapshots/$(git branch --show-current)-$(date +%H%M).p
 - `scripts/preflight.sh` - refuse to go dark until the guards are real
 - `scripts/refresh-loop.sh` - regenerate anything on an interval
 - `scripts/usage-watch.sh` - a pane that shows quota state to a passing human
+- `scripts/probe-agent.sh` - runtime-aware quota and authentication probe
 - `scripts/install-launchd.sh` - tier 5 on macOS, survives a reboot
 - `references/resume-contract.md` - `RESUME.md`, the ledger, and the report shape
 - `references/blackout-detection.md` - telling a quota wall from a real failure

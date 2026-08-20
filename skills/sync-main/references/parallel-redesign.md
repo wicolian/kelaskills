@@ -15,7 +15,7 @@ non-obvious and getting it wrong creates conflict debt.
 **Merge conflicts are a symptom of two versions editing the same files. Fix the file layout, not the merge.**
 
 A redesign branch that lives for 30+ days is not a branch, it's a fork. Every
-day it survives, the cost of landing it grows superlinearly — because `main`
+day it survives, the cost of landing it grows superlinearly - because `main`
 keeps shipping product logic into the exact files the redesign is rewriting.
 
 The industry pattern (strangler fig) inverts this: **v2 ships to `main` from
@@ -30,9 +30,9 @@ implementation** you port from.
 
 | Layer | Owns | v1/v2 relationship |
 |---|---|---|
-| **Logic** | data fetching, mutations, validation, state machines, permissions, tenancy scoping | **shared** — one copy, both consume |
-| **Shell** | routes, layout, composition, navigation | **forked** — separate trees |
-| **Presentation** | components, tokens, styles | **forked** — separate packages |
+| **Logic** | data fetching, mutations, validation, state machines, permissions, tenancy scoping | **shared** - one copy, both consume |
+| **Shell** | routes, layout, composition, navigation | **forked** - separate trees |
+| **Presentation** | components, tokens, styles | **forked** - separate packages |
 
 The rule: **a bug fix from `main` should only ever have to land in the logic
 layer.** If a fix to one screen requires editing both `v1/ThatScreen.tsx` and
@@ -53,7 +53,7 @@ useThatScreen()       <- queries, mutations, form state, validation, RBAC gates
   `-- v2/ThatScreen    <- new markup, consumes the same hook
 ```
 
-Extraction PRs are small, reviewable, and **merge into `main` immediately** —
+Extraction PRs are small, reviewable, and **merge into `main` immediately** -
 they don't change behaviour, so they carry near-zero risk. Each one permanently
 removes a future conflict surface. Do them first; they are the highest-leverage
 commits in the whole migration.
@@ -92,7 +92,7 @@ features or cosmetic churn.
 
 The collision is real: v1 product UI on Tailwind v3, v2 on Tailwind v4, both
 emitting unprefixed utilities into the same document. Same classnames,
-different semantics — v4 changed `shadow-sm`, `rounded-sm`, `outline-none`,
+different semantics - v4 changed `shadow-sm`, `rounded-sm`, `outline-none`,
 and the default border colour. Last stylesheet loaded wins. That is a silent,
 screen-by-screen visual corruption, not a build error.
 
@@ -103,20 +103,20 @@ runtime.** Solve them separately:
 have one, it is isolated and unaffected by the v1/v2 split. Do not entangle that
 decision with the others.
 
-**v1 vs v2** — both light DOM, so shadow DOM doesn't help. Two options:
+**v1 vs v2** - both light DOM, so shadow DOM doesn't help. Two options:
 
 1. **Split bundles at the route boundary** *(preferred)*. The flag lives in
    the router; ship two CSS bundles and load exactly one. Zero collision, zero
    prefix noise, authoring stays clean. Cost: switching versions is a full
    reload, and v1 and v2 can never render on the same page.
 
-2. **Prefix v2** — `@import "tailwindcss" prefix(v2)`, so utilities become
+2. **Prefix v2** - `@import "tailwindcss" prefix(v2)`, so utilities become
    `v2:flex`. Ugly to author, but it's the only option if a v2 shell has to
    host a v1 modal or a v1 page has to embed a v2 panel during the transition.
    Codemod-able in both directions.
 
 Pick (1) unless a mixed-render case actually exists. If one does, name it
-explicitly — a single hybrid screen is not worth prefixing the entire design
+explicitly - a single hybrid screen is not worth prefixing the entire design
 system.
 
 **Preflight:** v4's preflight will reset v1's styling out from under it. If both
@@ -127,12 +127,12 @@ bundles ever load together, import v4 without preflight (`theme.css` +
 
 Per screen, one PR each, all into `main`:
 
-1. Extract logic into shared — no visual change, merge same day
+1. Extract logic into shared - no visual change, merge same day
 2. Build the v2 screen against the extracted hook
 3. Register it in the v2 route tree (still dark)
 4. QA on the v2 flag internally
 5. Move the screen's flag default to v2
-6. **Retire or retain v1** — see the rollout model below. Under staged
+6. **Retire or retain v1** - see the rollout model below. Under staged
    cutover, delete the v1 screen in the same sprint. Under per-account
    rollout, v1 stays and the extraction from step 1 is what keeps it
    maintainable.
@@ -141,7 +141,7 @@ Step 1 is the one that gets skipped, and skipping it is what makes every later
 sync expensive. A screen is not migrated because its v2 copy renders; it is
 migrated when a fix to it can only land in one place.
 
-## Rollout model — decide this before porting anything
+## Rollout model - decide this before porting anything
 
 Flag granularity is **per route, not global**, under either model. A global
 flag forces big-bang launch and removes per-screen rollback.
@@ -152,7 +152,7 @@ tolerable here because it has a delete date.
 
 **Per-account rollout** *(account-level targeting in your flag provider)*.
 v1 and v2 coexist for as long as accounts are being rolled over, plausibly
-indefinitely. **No v1 deletion. No flag deletion — it is permanent
+indefinitely. **No v1 deletion. No flag deletion - it is permanent
 infrastructure, and needs to survive as an account targeting rule.**
 
 Per-account is not the cheaper option; it is strictly more expensive, and
@@ -177,7 +177,7 @@ Ordering follows design impact under both models: authoring surfaces first
 
 Absorbing other devs' `main` work is a recurring ritual with its own cadence,
 layering, and conflict tiers. See the parent **sync-main** skill (`SKILL.md`). The one rule that belongs here: a merge from `main` lands
-changes in v1 only — porting them into the v2 twins is a separate, mandatory
+changes in v1 only - porting them into the v2 twins is a separate, mandatory
 second step, and deferring it is how the branch re-forks from the inside.
 
 ## If a long-lived branch already exists
@@ -206,14 +206,14 @@ correct.
   divergent state machines. This is the most common regression pattern.
 - **A global "new UI" flag.** Forces big-bang launch, prevents per-screen
   rollback.
-- **Cosmetic cleanup in `v1`.** Lint, tokens, nesting — fix in `v2` or don't
+- **Cosmetic cleanup in `v1`.** Lint, tokens, nesting - fix in `v2` or don't
   fix. Behavioural fixes are different and do belong in v1.
 - **Letting v1 and v2 share a component file "just for now".** That file
   becomes the permanent conflict site.
 - **Deferring v1 deletion to "a cleanup sprint"** *(staged cutover only)*. The
   cleanup sprint does not happen. Delete in the porting PR.
 - **Treating per-account rollout as a reason to skip extraction.** It is the
-  reason extraction is mandatory — permanent coexistence without a shared
+  reason extraction is mandatory - permanent coexistence without a shared
   logic layer is permanent double-fixing.
 - **Restructuring a working repo to match this document's directory names.**
   The pattern transfers; the paths are disposable.
