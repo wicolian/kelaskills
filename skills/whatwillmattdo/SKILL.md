@@ -1,6 +1,6 @@
 ---
 name: whatwillmattdo
-description: Use when a run needs a stricter engineering bar than the host skill sets on its own, invoked as a trailing tag, such as "/graph-engineering -whatwillmattdo", "/stacked-prs -whatwillmattdo", "fix this -whatwillmattdo", "hold this to a higher bar", "be opinionated about this design", "what would a strict reviewer say", or "stop me shipping something sloppy". Adds a red loop before any bug theory, seam and depth checks at every design decision, a two-axis review before done, and routes whole processes out to the mattpocock-skills set when it is installed.
+description: Use when a run needs a stricter engineering bar than the host skill sets on its own, invoked as a trailing tag, such as "/graph-engineering -whatwillmattdo", "/stacked-prs -whatwillmattdo", "fix this -whatwillmattdo", "hold this to a higher bar", "be opinionated about this design", "what would a strict reviewer say", or "stop me shipping something sloppy".
 kind: lens
 tag: -whatwillmattdo
 phase: decisions

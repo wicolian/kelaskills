@@ -1,6 +1,6 @@
 ---
 name: blackout-proof
-description: Use when a long unattended agent run has to survive the thing that kills it - a usage or rate limit, a spend cap, a crashed CLI, a closed laptop. Triggers on "run overnight", "let me sleep", "I'm going out of town", "what happens if I hit the limit", "keep going without me", "it stopped at 3am and I lost the night", or before starting any programme longer than one quota window. Covers the survival tiers, the watchdog, blackout detection and backoff, self-regenerating reports, and the resume handoff.
+description: Use when a long unattended agent run has to survive the thing that kills it - a usage or rate limit, a spend cap, a crashed CLI, a closed laptop. Triggers on "run overnight", "let me sleep", "I'm going out of town", "what happens if I hit the limit", "keep going without me", "it stopped at 3am and I lost the night", or before starting any programme longer than one quota window.
 ---
 
 # Blackout-proof long runs

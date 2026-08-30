@@ -1,6 +1,6 @@
 ---
 name: file-pr
-description: Use when asked to "file a PR", "open a pull request", "create a PR", "PR this", "ship this branch", "raise a PR for this", or to write a pull request title and description. Covers checking whether a PR already exists, learning the repo's own title conventions, writing a problem-first description, opening ready-for-review instead of draft, model attribution, and evidence for user-visible change. For watching a PR after it is open, use babysit-pr.
+description: Use when asked to "file a PR", "open a pull request", "create a PR", "PR this", "ship this branch", "raise a PR for this", or to write a pull request title and description. For watching a PR after it is open, use babysit-pr.
 ---
 
 # File a PR

@@ -1,6 +1,6 @@
 ---
 name: obsidian-graph
-description: Use when a run should leave behind what it learned instead of paying to discover it again next week. Triggers on the -obsidian tag, "write that to my vault", "remember this for next time", "save what we found to Obsidian", "check my notes before you start", "we worked this out last month and lost it", or any run that ends with a confirmed cause, a decision worth its reason, or a constraint born from a failure. Adds typed-edge notes (supersedes, depends_on, decided_by, caused, implements, references) written back to an Obsidian vault, and a cheap read of what is already known before the work starts.
+description: Use when a run should leave behind what it learned instead of paying to discover it again next week. Triggers on the -obsidian tag, "write that to my vault", "remember this for next time", "save what we found to Obsidian", "check my notes before you start", "we worked this out last month and lost it", or any run that ends with a confirmed cause, a decision worth its reason, or a constraint born from a failure.
 kind: lens
 tag: -obsidian
 phase: after

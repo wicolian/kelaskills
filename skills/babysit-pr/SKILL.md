@@ -1,6 +1,6 @@
 ---
 name: babysit-pr
-description: Use when asked to "babysit this PR", "watch the PR", "monitor the pull request", "get it green", "address the review comments", "keep it rebased", "handle the bot feedback", or to sit on an open pull request until CI passes and reviewers approve. Covers the watch loop, acting only on feedback newer than the last push, verifying automated findings before changing code, telling a real CI failure from a flake, dismissing with a reason, base-branch drift, agent comment attribution, and the human gate on merging. For writing and opening the PR, use file-pr.
+description: Use when asked to "babysit this PR", "watch the PR", "monitor the pull request", "get it green", "address the review comments", "keep it rebased", "handle the bot feedback", or to sit on an open pull request until CI passes and reviewers approve. For writing and opening the PR, use file-pr.
 ---
 
 # Babysit a PR
