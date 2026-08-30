@@ -57,6 +57,21 @@ for d in skills/*/; do
 done
 echo "  checked $(ls -d skills/*/ 2>/dev/null | wc -l | tr -d ' ') skill folders"
 
+echo "== links =="
+# every markdown link that points at skills/<name> must resolve to a real folder
+nlink=0
+while IFS= read -r md; do
+  while IFS= read -r target; do
+    [ -n "$target" ] || continue
+    nlink=$((nlink+1))
+    [ -e "$target" ] || note "$md links to '$target', which does not exist"
+  done < <(grep -oE '\]\(([^)]*skills/[A-Za-z0-9_-]+)\)' "$md" 2>/dev/null \
+             | sed -E 's/^\]\(//; s/\)$//' \
+             | sed -E 's#^\.\./\.\./##; s#^\./##' \
+             | grep -vE '^https?://')
+done < <(git ls-files '*.md')
+echo "  checked $nlink skill links"
+
 echo "== scripts =="
 n=0
 while IFS= read -r s; do
