@@ -25,6 +25,7 @@ skill is installed for that provider rather than into a separate T3-only folder.
 
 | Skill | Use it when |
 |---|---|
+| [**graph-engineering**](skills/graph-engineering) | A job has many similar subtasks, a plan is about to be written as "first X, then Y, then Z", or a previous run went out of context. Turn it into a dependency graph: fan out, gate on blast radius, return the unit and not the batch. Includes the wiring for Claude Code, Codex, Cursor, Pi, LangGraph and Google ADK, and a 200-line runner with no framework. |
 | [**stacked-prs**](skills/stacked-prs) | A branch is too big or too risky to land as one PR. Build a stack, or carve an existing fat branch into one. Built around GitHub's native `gh stack`. |
 | [**sync-main**](skills/sync-main) | A long-lived redesign branch has to absorb what everyone else keeps shipping to `main`, without the redesigned twins silently going stale. |
 | [**blackout-proof**](skills/blackout-proof) | A long unattended run has to survive a usage limit, a spend cap, or a crashed CLI. The watchdog, the backoff, and the handoff that means you don't lose the night. |
