@@ -1,6 +1,7 @@
 ---
 name: skill-authoring
 description: Use when writing a new skill, when a skill never fires or the agent ignores it, when fixing a skill's description, when deciding whether something should be one skill or two, or when reviewing a set of skills for what they cost. Triggers on "write a skill", "my skill never fires", "the agent ignores my skill", "should this be one skill or two", "fix this skill's description", "review my skills".
+argument-hint: "[-whatwillmattdo]"
 ---
 
 # Writing a skill

@@ -1,6 +1,7 @@
 ---
 name: agent-retro
 description: Use when agent config is being tuned from memory instead of evidence. Triggers on "why do my agents keep doing this", "audit my agent history", "what mistakes does my agent make most", "tune my AGENTS.md with evidence", "which model breaks my environment", "retro on my agent usage", "my CLAUDE.md is too long and I do not know what still matters", "is that instruction still earning its place", "did that config change actually work". Mines the session transcripts already on your disk, counts failures by model and by harness, and turns the top few into concrete config changes.
+argument-hint: "[-obsidian]"
 ---
 
 # Agent retro

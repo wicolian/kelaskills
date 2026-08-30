@@ -57,6 +57,27 @@ for d in skills/*/; do
 done
 echo "  checked $(ls -d skills/*/ 2>/dev/null | wc -l | tr -d ' ') skill folders"
 
+# A hint that advertises a tag nobody implements is worse than no hint: it puts
+# a broken invocation in front of the user at the exact moment they are choosing.
+KNOWN_TAGS=" $(for d in skills/*/; do
+    f="${d%/}/SKILL.md"; [ -f "$f" ] || continue
+    [ "$(fm "$f" kind)" = "lens" ] || continue
+    t="$(fm "$f" tag)"; [ -n "$t" ] && printf '%s ' "$t"
+  done) "
+for d in skills/*/; do
+  f="${d%/}/SKILL.md"; [ -f "$f" ] || continue
+  hint="$(fm "$f" argument-hint)"
+  [ -n "$hint" ] || continue
+  # Only a fully bracketed token counts, so "[skill-name]" and the "<skill>
+  # [-tag ...]" placeholder are not mistaken for advertised lenses.
+  for t in $(printf '%s' "$hint" | grep -oE '\[-[a-z][a-z0-9-]*\]' | tr -d '[]' || true); do
+    case "$KNOWN_TAGS" in
+      *" $t "*) ;;
+      *) note "$(basename "${d%/}"): argument-hint advertises '$t', which is not a registered lens" ;;
+    esac
+  done
+done
+
 echo "== links =="
 # Every relative markdown link must resolve. This covers skills/<name> links in
 # the README and TAGS.md, and the ../sibling links skills use to reach each

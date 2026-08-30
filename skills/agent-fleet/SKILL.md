@@ -1,6 +1,7 @@
 ---
 name: agent-fleet
 description: Use when a job is bigger than one context and each worker should stay visible in its own herdr pane instead of running as a headless subagent. Triggers on "spawn a fleet", "run these in parallel panes", "watch the workers". Also use when one worker must hand a finding to another, when a fleet should raise one decision to a human instead of stalling on six, when an agent sits in a blocked permission dialog, or when parallel waves need worktree isolation. Requires HERDR_ENV=1.
+argument-hint: "[-ask]"
 ---
 
 # Agent fleet

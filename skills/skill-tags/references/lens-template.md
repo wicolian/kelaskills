@@ -66,6 +66,9 @@ CONFIDENCE high | medium | low
 - [ ] All four required headings are present, spelled exactly.
 - [ ] `skills/skill-tags/scripts/tag-resolve.sh --list` shows your tag.
 - [ ] Registered in `TAGS.md`.
+- [ ] Your lens does NOT declare `argument-hint`. It is a tag, it does not take
+      tags. Instead, add it to the `argument-hint` of each host skill it
+      genuinely improves, and only those.
 
 ## Is it a lens or a skill?
 

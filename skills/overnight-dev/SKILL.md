@@ -1,6 +1,7 @@
 ---
 name: overnight-dev
 description: Use when one command should take a web app from "probably fine" to "verifiably usable" unattended - QA it as a daily power user against a local server, fix what breaks, ship one deploy, verify the deployed site, cross-check error and product telemetry, and leave a morning report. Triggers on "run overnight", "make dev clean by morning", "fix it while I sleep", "QA this properly", "is this actually usable", "find the z-index bugs".
+argument-hint: "[-why] [-obsidian]"
 ---
 
 # Overnight dev

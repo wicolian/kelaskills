@@ -1,6 +1,7 @@
 ---
 name: work-order-report
 description: Use when an audit, review or sweep must produce something an agent can ACT on rather than read - "turn this audit into something an agent can fix", "make the sweep actionable", "give the HTML to an agent and it fixes everything", a findings report with screenshots and a built-in tracker, one browsable HTML from a fleet's markdown reports, or a self-contained audit deliverable.
+argument-hint: "[-obsidian]"
 ---
 
 # Work-order reports
