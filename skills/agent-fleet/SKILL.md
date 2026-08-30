@@ -1,6 +1,6 @@
 ---
 name: agent-fleet
-description: Run a fleet of visible Claude Code, Codex, Cursor, Hermes Agent, Pi, or T3 Code provider workers in herdr panes. Use when a job is bigger than one context, such as many independent tasks, an overnight programme, or a wave of parallel edits, and each worker should stay visible instead of running as a headless subagent. Cover spawning, addressing, watching, collecting reports, runtime selection, and file ownership. Require HERDR_ENV=1.
+description: Run a fleet of visible Claude Code, Codex, Cursor, Hermes Agent, Pi, or T3 Code provider workers in herdr panes. Use when a job is bigger than one context, such as many independent tasks, an overnight programme, or a wave of parallel edits, and each worker should stay visible instead of running as a headless subagent. Cover spawning, addressing, watching, collecting reports, runtime selection, and file ownership. Also use when one worker must hand a finding to another, when a fleet needs to raise a single decision to a human instead of stalling on six, when an agent is stuck in a blocked permission dialog, or when parallel waves need git worktree isolation instead of trusting a file-ownership convention. Require HERDR_ENV=1.
 ---
 
 # Agent fleet
@@ -93,7 +93,7 @@ file before spawning anything.
 scripts/fleet-status.sh
 herdr pane list
 herdr pane read wG:pE --source visible --lines 40
-herdr wait agent-status wG:pE --status done --timeout 600000
+herdr agent wait wG:pE --until done --timeout 600000
 ```
 
 Treat `.done` beside a report as the reliable completion signal. Use herdr's
@@ -109,6 +109,103 @@ herdr pane send-keys wG:pE Enter
 
 If a pane remains unchanged after submission, resend once. The launcher compares
 visible pane output and performs that single retry automatically.
+
+## Talk between panes
+
+Workers are not isolated. A pane can address another pane directly, which is how
+one worker hands a finding to the worker who needs it instead of dropping it in a
+file nobody reads until the end.
+
+```bash
+herdr agent list
+herdr agent prompt api-worker "auth.ts now exports verifySession, not checkSession." --wait --until idle --timeout 120000
+herdr agent read api-worker --source recent-unwrapped --lines 120
+herdr agent wait api-worker --until blocked --until done --timeout 600000
+```
+
+`herdr agent prompt` is lifecycle aware and is the better default. It refuses to
+submit into an agent that is already `blocked`, so you do not type an answer into
+a permission dialog by accident. Raw `herdr pane send-text` plus `send-keys Enter`
+still works and is what the bundled scripts use, but it will happily type into a
+dialog. Prefer `agent prompt` for anything you did not write yourself.
+
+Address by agent name when one is set, by pane id otherwise. Names must be unique
+among live agents and they clear when the agent exits, so a name is a handle on
+the current occupant of a pane and not a permanent identity. `herdr agent list`
+resolves both.
+
+`--source recent-unwrapped` is the one to read for transcripts and logs. Note the
+limit: if the agent runs on the terminal alternate screen, rows that scrolled off
+never reach herdr's scrollback and `--lines` cannot recover them. When you need
+the whole answer, tell the worker to write it to a file and read the file.
+
+**There is no message bus.** herdr's socket carries events internally, but no CLI
+subscribes to them. Direct addressing plus the filesystem is the whole vocabulary.
+So keep the rule: durable state goes in files, `agent prompt` is for a nudge or a
+handoff that the receiving worker must act on now.
+
+## Escalate one question, not six
+
+A fleet that asks the human six questions is a fleet that stopped six times. Cap
+it at the orchestrator.
+
+- Workers never ask the human. A worker that hits a fork writes the question into
+  its report and keeps going on a stated assumption, or stops if the fork is
+  genuinely blocking.
+- The orchestrator collects the questions, answers every one it can from the repo
+  or from a previous run, and merges what is left. Six worker questions usually
+  collapse into one real decision.
+- Raise it once, and make it decidable in seconds: the exact fork, both options,
+  your recommendation.
+
+```bash
+herdr notification show "Fleet needs one decision" \
+  --body "Contrast fix may change the brand palette. Y = change it, N = ratio only." \
+  --sound request
+```
+
+Notifications are one way. There is no blocking "ask the human" call. The answer
+comes back the same way any other input does, so the pattern is: notify, then wait
+on the state you actually care about.
+
+An agent showing its own permission dialog goes to `blocked`. That is the other
+escalation signal, and it is the one that will stall a fleet overnight:
+
+```bash
+herdr agent wait wG:pE --until blocked --timeout 0
+```
+
+Inspect a blocked pane before answering it, and ask the human before approving
+anything the worker was not authorised to do. Never let an orchestrator
+auto-approve another agent's permission prompt.
+
+For a fleet that must survive the human being asleep, pair this with
+`blackout-proof`. For deciding which questions are worth the human's attention at
+all, `right-question` is the lens for it.
+
+## Isolate risky waves with worktrees
+
+File ownership is a convention, and conventions fail silently. When a wave rewrites
+shared files, or two waves must run on the same repo at once, give each one its own
+worktree instead of trusting the rule.
+
+```bash
+herdr worktree create --workspace w1 --branch fleet/api-layer --base main \
+  --path ../wt-api-layer --label "api layer"
+herdr worktree list
+herdr worktree remove --force
+```
+
+Each worktree opens as its own workspace with its own pane tree and its own working
+directory, so a worker physically cannot touch another wave's files.
+
+Use it when: the wave touches shared or generated files, two fleets run at once, or
+the change is one you may want to throw away whole. Skip it when: a single wave has
+clean per-file ownership, because a worktree per worker costs disk and makes the
+merge your problem instead of git's.
+
+Worktrees isolate the filesystem. They do not isolate the test runner, the dev
+server ports, or the browser sessions. Those caps still apply across the whole fleet.
 
 ## Write every prompt in this order
 

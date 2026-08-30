@@ -150,17 +150,17 @@ declare the earlier one and say so in the body; do not invent a compound phase.
 The body must contain these four sections, with these exact headings, because
 the resolver and the host agent read them by name:
 
-**`## Intervention points`** — a table. One row per moment the lens acts.
+**`## Intervention points`** is a table. One row per moment the lens acts.
 Column 1 is a *host-independent* moment, not a step number. Good: "before the
 first irreversible action". Bad: "at step 4".
 
-**`## Hard rules`** — the short list that overrides everything. Keep it under
+**`## Hard rules`** is the short list that overrides everything. Keep it under
 about six. A lens with twenty hard rules has no hard rules.
 
-**`## When to skip`** — the conditions under which this lens should decline to
+**`## When to skip`** is the conditions under which this lens should decline to
 act. A lens that never declines is a tax.
 
-**`## Handoff`** — what this lens leaves behind for the next one, in a stated
+**`## Handoff`** is what this lens leaves behind for the next one, in a stated
 shape. `-why` leaves findings. `-ask` leaves answers and assumptions.
 `-obsidian` reads both.
 
