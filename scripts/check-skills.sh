@@ -58,19 +58,29 @@ done
 echo "  checked $(ls -d skills/*/ 2>/dev/null | wc -l | tr -d ' ') skill folders"
 
 echo "== links =="
-# every markdown link that points at skills/<name> must resolve to a real folder
+# Every relative markdown link must resolve. This covers skills/<name> links in
+# the README and TAGS.md, and the ../sibling links skills use to reach each
+# other, which an earlier version of this check silently ignored.
 nlink=0
 while IFS= read -r md; do
+  dir="$(dirname "$md")"
   while IFS= read -r target; do
     [ -n "$target" ] || continue
+    case "$target" in
+      http://*|https://*|mailto:*|\#*) continue ;;
+    esac
+    target="${target%%#*}"          # drop an anchor
+    target="${target%%\?*}"         # drop a query
+    [ -n "$target" ] || continue
     nlink=$((nlink+1))
-    [ -e "$target" ] || note "$md links to '$target', which does not exist"
-  done < <(grep -oE '\]\(([^)]*skills/[A-Za-z0-9_-]+)\)' "$md" 2>/dev/null \
-             | sed -E 's/^\]\(//; s/\)$//' \
-             | sed -E 's#^\.\./\.\./##; s#^\./##' \
-             | grep -vE '^https?://')
+    case "$target" in
+      /*) resolved="${target#/}" ;;
+      *)  resolved="$dir/$target" ;;
+    esac
+    [ -e "$resolved" ] || note "$md links to '$target', which does not resolve"
+  done < <(grep -oE '\]\([^)]+\)' "$md" 2>/dev/null | sed -E 's/^\]\(//; s/\)$//')
 done < <(git ls-files --cached --others --exclude-standard '*.md')
-echo "  checked $nlink skill links"
+echo "  checked $nlink relative links"
 
 echo "== scripts =="
 n=0

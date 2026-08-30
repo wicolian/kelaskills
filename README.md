@@ -34,6 +34,7 @@ kelaskills" and it is the skill that knows how.
 |---|---|
 | [**stacked-prs**](skills/stacked-prs) | A branch is too big or too risky to land as one PR. Build a stack, or carve an existing fat branch into one. Built around GitHub's native `gh stack`. |
 | [**sync-main**](skills/sync-main) | A long-lived redesign branch has to absorb what everyone else keeps shipping to `main`, without the redesigned twins silently going stale. |
+| [**converge-worktrees**](skills/converge-worktrees) | A week's work is scattered across several worktrees, branches and open PRs, and it has to land as one pull request per repo without losing the review descriptions already written. Measure first: most "lost" uncommitted work turns out to be already committed somewhere else. |
 | [**file-pr**](skills/file-pr) | Your agent can already open pull requests. It opens ones humans hate. Lead with the problem in the user's own words, title the symptom and not the code, and open a real PR so the reviewers actually run. |
 | [**babysit-pr**](skills/babysit-pr) | Drive a PR to green without letting review feedback triple its size. Act only on feedback newer than the last push, verify every automated finding against source, and refuse scope creep out loud. |
 
