@@ -1,6 +1,7 @@
 ---
 name: sync-main
 description: Use when a long-lived redesign or refactor branch has to absorb work that other people keep shipping to main - running the merge, telling a real gap from a false positive, deciding whether a mainline fix needs porting into a redesigned twin file, resolving a recurring merge conflict, or auditing whether a branch is still main-compliant. Also use when a parity or drift checker reports everything is fine and you do not believe it.
+argument-hint: "[-why] [-obsidian]"
 ---
 
 # Syncing main into a long-lived branch

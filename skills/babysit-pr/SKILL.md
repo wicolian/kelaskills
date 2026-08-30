@@ -1,6 +1,7 @@
 ---
 name: babysit-pr
 description: Use when asked to "babysit this PR", "watch the PR", "monitor the pull request", "get it green", "address the review comments", "keep it rebased", "handle the bot feedback", or to sit on an open pull request until CI passes and reviewers approve. For writing and opening the PR, use file-pr.
+argument-hint: "[-whatwillmattdo]"
 ---
 
 # Babysit a PR

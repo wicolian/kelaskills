@@ -1,6 +1,7 @@
 ---
 name: stacked-prs
 description: Use when a branch is too large or too risky to land as one pull request - a month-long revamp, a migration (npm to pnpm, TypeScript upgrade), or any branch with hundreds of commits or changed files that must reach main without landing half-working code. Also use when asked about stacked PRs, dependent PRs, gh stack, splitting or carving a branch into layers, keeping a stack rebased after review feedback, or merging a stack.
+argument-hint: "[-ask] [-whatwillmattdo]"
 ---
 
 # Stacked PRs

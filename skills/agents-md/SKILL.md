@@ -1,6 +1,7 @@
 ---
 name: agents-md
 description: Use when writing, fixing or auditing the instructions file an agent reads before it changes a codebase - AGENTS.md, CLAUDE.md, or a per-project equivalent. Triggers on "write an AGENTS.md", "my CLAUDE.md is bad", "set up agent instructions for this repo", "init this repo for agents", "the agent keeps breaking my dev server", "why does my agent ignore my preferences", "the agent only fixed one of the places", "our agent instructions are just a README", or "add a glossary for agents". Also use when an agent argues back citing a file the person did not write, when its reports use words nobody on the team uses, or when a feature keeps shipping on one path only.
+argument-hint: "[-why]"
 ---
 
 # Writing the file an agent reads first

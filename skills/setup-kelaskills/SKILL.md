@@ -1,6 +1,7 @@
 ---
 name: setup-kelaskills
 description: Use when installing, verifying, updating or removing the kelaskills pack, or when picking which one of its skills fits the job in front of you. Triggers on "install kelaskills", "set up my skills", "set up this skill pack", "what skills do I have", "which skill should I use for this", "update my skills", "my skill is not firing", "nothing happened after I installed it".
+argument-hint: "[skill-name]"
 ---
 
 # Set up kelaskills

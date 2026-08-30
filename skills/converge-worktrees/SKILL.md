@@ -1,6 +1,7 @@
 ---
 name: converge-worktrees
 description: Use when a work period ends with the code scattered across several worktrees, branches and open pull requests, and it has to land as one pull request per repo. Triggers on "commit and push everything", "get all my worktrees onto one branch", "converge my branches", "land the week's work", "I want one PR at the end", "several worktrees, one PR", or "I don't want to lose the PR descriptions".
+argument-hint: "[-why] [-ask]"
 ---
 
 # Converging scattered worktrees into one PR per repo

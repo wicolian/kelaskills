@@ -1,6 +1,7 @@
 ---
 name: skill-tags
 description: Use when a skill invocation carries a trailing -tag, such as "/graph-engineering -whatwillmattdo", "/overnight-dev -why", "fix this -ask", or "audit the repo -why -obsidian". Also use when writing a new lens, when two tags give conflicting instructions, when deciding whether something should be a new skill or a tag on an existing one, or when a run needs historical context, a question pass, an opinionated reviewer, or a learning write-back layered on top of work it already knows how to do.
+argument-hint: "<skill> [-tag ...]"
 ---
 
 # Skill tags

@@ -39,6 +39,32 @@ evidence already answered.
 dig becomes next run's starting context, so nobody pays for the same archaeology
 twice.
 
+## Advertising the tags a skill takes
+
+A tag does nothing at runtime. Nothing parses it. It works because `skill-tags`
+is installed and tells the model what a trailing `-tag` means. That makes it a
+convention, not a feature, and a convention nobody can see is a convention
+nobody uses.
+
+So every host skill that a lens genuinely improves declares the tags worth using
+with it:
+
+```yaml
+argument-hint: "[-why] [-ask] [-whatwillmattdo] [-obsidian]"
+```
+
+The slash menu then shows them at the moment someone is choosing.
+
+Three rules:
+
+1. **Only list a lens that changes what that host does.** `-why` on a skill with
+   no history to dig is noise in the menu, which is the thing the hint exists to
+   fix.
+2. **Lenses do not declare one.** They are the tags; they do not take them.
+3. **Every bracketed tag must be a registered lens.** `./scripts/check-skills.sh`
+   fails on a hint that advertises a tag nobody implements, because that puts a
+   broken invocation in front of the user at the worst possible moment.
+
 ## Resolving a stack
 
 ```bash

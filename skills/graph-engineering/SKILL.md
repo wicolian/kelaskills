@@ -1,6 +1,7 @@
 ---
 name: graph-engineering
 description: Use when a job has many similar subtasks, when a plan is about to be written as "first X, then Y, then Z" across more than about four steps, when work spans 10 or more files or sources, when a previous run went out of context or thinned out toward the end, or when a plan ends in an irreversible action that needs a gate. Also use when asked to set up agent orchestration, parallel subagents, a review fleet, or a multi-agent workflow, and when an agent loop is fast but never gets smarter.
+argument-hint: "[-why] [-ask] [-whatwillmattdo] [-obsidian]"
 ---
 
 # Graph engineering

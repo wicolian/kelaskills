@@ -1,6 +1,7 @@
 ---
 name: file-pr
 description: Use when asked to "file a PR", "open a pull request", "create a PR", "PR this", "ship this branch", "raise a PR for this", or to write a pull request title and description. For watching a PR after it is open, use babysit-pr.
+argument-hint: "[-why]"
 ---
 
 # File a PR
