@@ -4,6 +4,7 @@ description: Use when a task is under-specified and the agent is about to either
 kind: lens
 tag: -ask
 phase: before
+order: 20
 ask_budget: 1
 ---
 

@@ -10,6 +10,7 @@ description: Use when ... Trigger phrases go here, the same as any skill. Say wh
 kind: lens
 tag: -your-lens
 phase: before
+order: 50
 ask_budget: 0
 ---
 
@@ -58,6 +59,8 @@ CONFIDENCE high | medium | low
 ## Checks before you commit
 
 - [ ] `phase` is one of `before`, `decisions`, `gates`, `after`.
+- [ ] `order` is set only if another lens in your phase must run before or after
+      you. Lower runs first. Leave it out otherwise.
 - [ ] The lens adds no deliverable and changes no definition of done.
 - [ ] `ask_budget` is a number, and you can defend it. Most lenses want 0 or 1.
 - [ ] All four required headings are present, spelled exactly.

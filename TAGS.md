@@ -31,6 +31,10 @@ typed them:
 before  ->  decisions  ->  gates  ->  after
 ```
 
+Inside a phase, an optional `order` breaks the tie. `-why` runs before `-ask`
+because the question pass reads the archaeology and deletes every question the
+evidence already answered.
+
 `-why` then `-obsidian` is the loop that makes the system get smarter. This run's
 dig becomes next run's starting context, so nobody pays for the same archaeology
 twice.

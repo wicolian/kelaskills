@@ -41,10 +41,11 @@ scan_lenses() {
     f="${d%/}/SKILL.md"; [ -f "$f" ] || continue
     [ "$(fm "$f" kind)" = "lens" ] || continue
     n=$(fm "$f" name); t=$(fm "$f" tag); p=$(fm "$f" phase); b=$(fm "$f" ask_budget)
+    o=$(fm "$f" order); case "$o" in ''|*[!0-9]*) o=50 ;; esac
     [ -n "$t" ] || t="-$n"
     [ -n "$p" ] || p="decisions"
     [ -n "$b" ] || b=0
-    printf '%s\t%s\t%s\t%s\t%s\t%s\n' "$t" "$n" "$p" "$(phase_rank "$p")" "$b" "$f"
+    printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$t" "$n" "$p" "$(phase_rank "$p")" "$b" "$f" "$o"
   done
 }
 
@@ -66,8 +67,8 @@ if [ $# -eq 0 ]; then usage; exit 2; fi
 if [ "$1" = "--list" ]; then
   if [ -z "$LENSES" ]; then echo "no lenses found under $SKILLS_ROOT"; exit 0; fi
   printf '%-18s %-20s %-10s %s\n' TAG SKILL PHASE ASK_ROUNDS
-  printf '%s\n' "$LENSES" | sort -t"$(printf '\t')" -k4,4n \
-    | while IFS=$'\t' read -r t n p r b f; do printf '%-18s %-20s %-10s %s\n' "$t" "$n" "$p" "$b"; done
+  printf '%s\n' "$LENSES" | sort -t"$(printf '\t')" -k4,4n -k7,7n \
+    | while IFS=$'\t' read -r t n p r b f o; do printf '%-18s %-20s %-10s %s\n' "$t" "$n" "$p" "$b"; done
   exit 0
 fi
 if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then usage; exit 0; fi
@@ -103,7 +104,7 @@ for t in ${TAGS[@]+"${TAGS[@]}"}; do
   fi
   RESOLVED="${RESOLVED}${row}"$'\n'
 done
-RESOLVED="$(printf '%s' "$RESOLVED" | sed '/^$/d' | sort -t"$(printf '\t')" -k4,4n -k2,2)"
+RESOLVED="$(printf '%s' "$RESOLVED" | sed '/^$/d' | sort -t"$(printf '\t')" -k4,4n -k7,7n -k2,2)"
 
 TOTAL=0
 if [ -n "$RESOLVED" ]; then
@@ -123,7 +124,7 @@ echo "ask rounds:  $TOTAL interruption(s) allowed in total (batch questions with
 echo
 echo "Reading order (phase order, not the order you typed):"
 i=0
-while IFS=$'\t' read -r t n p r b f; do
+while IFS=$'\t' read -r t n p r b f o; do
   i=$((i+1))
   printf '  %d. %-18s %-10s rounds<=%s  %s\n' "$i" "$t" "($p)" "$b" "${f#"$SKILLS_ROOT"/}"
 done <<< "$RESOLVED"
@@ -136,7 +137,7 @@ if [ "$BRIEF" = "1" ]; then
   echo "The host skill owns the job and the definition of done. A lens may only add"
   echo "constraints, evidence, questions or gates. It may never add scope."
   echo
-  while IFS=$'\t' read -r t n p r b f; do
+  while IFS=$'\t' read -r t n p r b f o; do
     echo "$t  (phase: $p, may interrupt the human at most $b time(s))"
     echo "    read: ${f#"$SKILLS_ROOT"/}"
   done <<< "$RESOLVED"

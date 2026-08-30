@@ -151,12 +151,19 @@ description: Use when ... (the trigger sentence, same as any skill)
 kind: lens
 tag: -your-lens
 phase: before | decisions | gates | after
+order: 50          # optional, breaks ties inside a phase, lower runs first
 ask_budget: 0
 ---
 ```
 
 `phase` is what the resolver sorts on. If your lens genuinely acts at two points,
 declare the earlier one and say so in the body; do not invent a compound phase.
+
+`order` is optional and breaks ties **inside** a phase. It defaults to 50. Set it
+only when one lens in a phase genuinely feeds another: `-why` is `order: 10` and
+`-ask` is `order: 20`, because the question pass reads the archaeology's findings
+to delete questions the evidence already answered. Without it the tie would break
+alphabetically, which is to say by accident.
 
 The body must contain these four sections, with these exact headings, because
 the resolver and the host agent read them by name:

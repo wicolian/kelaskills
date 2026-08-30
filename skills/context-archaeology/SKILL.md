@@ -4,6 +4,7 @@ description: Use when code looks wrong and you cannot tell whether it is a mista
 kind: lens
 tag: -why
 phase: before
+order: 10
 ask_budget: 0
 ---
 
