@@ -1,0 +1,21 @@
+{
+  "legacy-import": {
+    "regex": "from ['\"]legacy/([A-Za-z][A-Za-z0-9]*)",
+    "means": "imports a module out of the legacy directory",
+    "collect": true
+  },
+  "deprecated-class": {
+    "regex": "[\"'\\s](old-[a-z][a-z0-9-]*)",
+    "means": "uses a stylesheet class from the deprecated prefix",
+    "collect": true
+  },
+  "compat-shim": {
+    "regex": "(CompatProvider|withLegacyTheme|legacy-portal-root)",
+    "means": "depends on a named compatibility shim",
+    "collect": true
+  },
+  "replaced-global": {
+    "regex": "(window\\.appConfig|globalThis\\.__APP__)",
+    "means": "reads a global that a newer API replaced"
+  }
+}
