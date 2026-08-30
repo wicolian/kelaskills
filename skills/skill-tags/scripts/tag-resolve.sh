@@ -65,7 +65,7 @@ if [ $# -eq 0 ]; then usage; exit 2; fi
 
 if [ "$1" = "--list" ]; then
   if [ -z "$LENSES" ]; then echo "no lenses found under $SKILLS_ROOT"; exit 0; fi
-  printf '%-18s %-20s %-10s %s\n' TAG SKILL PHASE ASK_BUDGET
+  printf '%-18s %-20s %-10s %s\n' TAG SKILL PHASE ASK_ROUNDS
   printf '%s\n' "$LENSES" | sort -t"$(printf '\t')" -k4,4n \
     | while IFS=$'\t' read -r t n p r b f; do printf '%-18s %-20s %-10s %s\n' "$t" "$n" "$p" "$b"; done
   exit 0
@@ -119,13 +119,13 @@ if [ -z "$RESOLVED" ]; then
   exit 0
 fi
 echo "lenses:      $(printf '%s\n' "$RESOLVED" | cut -f1 | tr '\n' ' ')"
-echo "ask budget:  $TOTAL question(s) total across all lenses"
+echo "ask rounds:  $TOTAL interruption(s) allowed in total (batch questions within a round)"
 echo
 echo "Reading order (phase order, not the order you typed):"
 i=0
 while IFS=$'\t' read -r t n p r b f; do
   i=$((i+1))
-  printf '  %d. %-18s %-10s ask<=%s  %s\n' "$i" "$t" "($p)" "$b" "${f#"$SKILLS_ROOT"/}"
+  printf '  %d. %-18s %-10s rounds<=%s  %s\n' "$i" "$t" "($p)" "$b" "${f#"$SKILLS_ROOT"/}"
 done <<< "$RESOLVED"
 printf '  %d. %-18s %-10s          %s\n' "$((i+1))" "$HOST" "(host)" "${HOST_FILE#"$SKILLS_ROOT"/}"
 
@@ -137,11 +137,13 @@ if [ "$BRIEF" = "1" ]; then
   echo "constraints, evidence, questions or gates. It may never add scope."
   echo
   while IFS=$'\t' read -r t n p r b f; do
-    echo "$t  (phase: $p, may ask at most $b question(s))"
+    echo "$t  (phase: $p, may interrupt the human at most $b time(s))"
     echo "    read: ${f#"$SKILLS_ROOT"/}"
   done <<< "$RESOLVED"
   echo
-  echo "Total human questions allowed across all lenses: $TOTAL. This is a cap, not a target."
+  echo "Total interruptions allowed across all lenses: $TOTAL. This is a cap, not a target."
+  echo "An interruption is one batched round. Ten questions asked at once is one."
+  echo "Never ask for a fact. Facts are yours to find. Only decisions go to the human."
   echo "Announce the lenses in effect once, at the top of your first reply."
   echo "On a conflict: hard rules > narrower scope > evidence > conservative > ask."
   echo "Never resolve a conflict silently; say what disagreed and which rule decided."
