@@ -1,6 +1,6 @@
 ---
 name: context-archaeology
-description: Use when code looks wrong and you cannot tell whether it is a mistake or a scar. Triggers on the -why tag, and on "why is this code like this", "is this load-bearing", "who decided this", "find the incident that caused this", "is this safe to delete", "what was this hack for", "there must be a reason someone wrote it this way", "check the pull request before you touch it", or "did we already try this". The -why lens re
+description: Use when code looks wrong and you cannot tell whether it is a mistake or a scar. Triggers on the -why tag, and on "why is this code like this", "is this load-bearing", "who decided this", "find the incident that caused this", "is this safe to delete", "what was this hack for", "there must be a reason someone wrote it this way", "check the pull request before you touch it", or "did we already try this".
 kind: lens
 tag: -why
 phase: before

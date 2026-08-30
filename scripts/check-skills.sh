@@ -22,7 +22,7 @@ fm() {
 }
 
 echo "== em-dash =="
-HITS=$(git ls-files -z | xargs -0 grep -n $'\xe2\x80\x94' 2>/dev/null)
+HITS=$(git ls-files -z --cached --others --exclude-standard | xargs -0 grep -n $'\xe2\x80\x94' 2>/dev/null)
 if [ -n "$HITS" ]; then
   note "banned character U+2014 found. use a comma, a colon, a full stop, or ' - '."
   printf '%s\n' "$HITS" | sed 's/^/    /' | head -20
@@ -69,7 +69,7 @@ while IFS= read -r md; do
              | sed -E 's/^\]\(//; s/\)$//' \
              | sed -E 's#^\.\./\.\./##; s#^\./##' \
              | grep -vE '^https?://')
-done < <(git ls-files '*.md')
+done < <(git ls-files --cached --others --exclude-standard '*.md')
 echo "  checked $nlink skill links"
 
 echo "== scripts =="
@@ -81,7 +81,7 @@ while IFS= read -r s; do
     *.sh) bash -n "$s" 2>/dev/null || note "$s fails bash syntax check" ;;
     *.mjs|*.js) command -v node >/dev/null && { node --check "$s" 2>/dev/null || note "$s fails node syntax check"; } ;;
   esac
-done < <(git ls-files 'skills/*/scripts/*' 'skills/*/*.sh' 'skills/*/*.mjs' 'scripts/*' 2>/dev/null)
+done < <(git ls-files --cached --others --exclude-standard 'skills/*/scripts/*' 'skills/*/*.sh' 'skills/*/*.mjs' 'scripts/*' 2>/dev/null)
 echo "  checked $n scripts"
 
 echo
