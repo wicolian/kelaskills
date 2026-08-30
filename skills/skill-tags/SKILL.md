@@ -97,23 +97,34 @@ rule decided it.
 
 ## The ask budget
 
-Lenses add questions. Three lenses each adding "just a couple" is how a run that
-should have been unattended turns into an interview.
+**The budget counts interruptions, not questions.**
 
-Every lens declares an ask budget in its frontmatter. The run's total is the sum,
-and it is a cap, not a target:
+This distinction is the whole point. Ten questions asked in one batch is one
+interruption. Ten questions asked one at a time is ten, and it turns a run that
+should have been unattended into an interview.
+
+So the target shape is: question count high, round count low. Ask everything you
+can answer *now*, all at once. A question whose answer depends on another
+question still open in the same round belongs to a later round, not this one.
+
+Every lens declares its budget in frontmatter. The run's total is the sum, and it
+is a cap, not a target:
 
 ```yaml
-ask_budget: 2
+ask_budget: 1
 ```
 
-- Over budget? Drop the lowest-value questions, do not batch them into one
-  giant question with six parts.
-- A question that the archaeology already answered is not a question. Delete it.
-- `-ask` is the only lens allowed to spend another lens's unused budget, because
-  triaging questions is its whole job.
-- Zero budget means the lens must proceed on a stated assumption instead of
-  asking. That is a legitimate design, not a failure.
+- Each round is numbered, and **every question carries your recommended answer**,
+  so a tired human can ratify instead of compose.
+- Never ask for a fact. Facts are yours to go and find. Only decisions go to the
+  human.
+- A question the archaeology already answered is not a question. Delete it.
+- `-ask` may spend another lens's unused rounds, because merging everyone's
+  questions into one round is its entire job.
+- Zero budget means proceed on a stated assumption instead of asking. That is a
+  legitimate design, not a failure.
+- Round count climbing past three or four is a signal, not a cost. It means the
+  scope is too big. Say so and propose a split.
 
 ## Cost
 

@@ -32,7 +32,41 @@ skill is installed for that provider rather than into a separate T3-only folder.
 | [**overnight-dev**](skills/overnight-dev) | You want a web app taken from "probably fine" to "verifiably usable" unattended, with a report waiting in the morning. |
 | [**agent-fleet**](skills/agent-fleet) | A job is bigger than one context and you want Claude Code, Codex, Cursor, Hermes, Pi, or a T3 Code provider visible in its own pane. |
 | [**switch-env**](skills/switch-env) | Point a local dev server at a different backend without touching `.env`, and survive the auto-restart that trips people up. |
+| [**skill-tags**](skills/skill-tags) | A skill invocation carries a trailing `-tag`. Tags are lenses: they change how a skill runs, never what it is for. The composition rules, the fixed phase order, conflict resolution, and a resolver that runs. |
+| [**context-archaeology**](skills/context-archaeology) | Lens `-why`. The code looks wrong and you cannot tell if it is a mistake or a scar. Recovers the reason from pull requests, incidents, chat threads, telemetry and meeting transcripts, and tells you plainly when the reason was never recorded. |
+| [**right-question**](skills/right-question) | Lens `-ask`. Work is under-specified. Auto-answers what the evidence answers, merges what is left, and takes the human one batched round instead of twenty interruptions. |
+| [**whatwillmattdo**](skills/whatwillmattdo) | Lens `-whatwillmattdo`. Holds every design decision and every gate to a stricter bar, distilled from [Matt Pocock's skills](https://github.com/mattpocock/skills). Routes to his originals when you have them installed. |
+| [**obsidian-graph**](skills/obsidian-graph) | Lens `-obsidian`. Writes what a run learned back to a typed-edge vault, so the next run starts where this one ended instead of paying for the same discovery twice. |
 | [herdr](skills/herdr) | Pointer only; that skill ships with [herdr](https://github.com/herdr-dev) itself. |
+
+## Tags
+
+Four of the skills above are **lenses**. A lens is not something you run. It is
+something you add to a skill you were already running, and it changes how that
+run behaves.
+
+```bash
+/graph-engineering -why                 plan the work, after finding out why the code is like this
+/overnight-dev -why -obsidian           QA overnight, skip the known bugs, write the new ones back
+/stacked-prs -whatwillmattdo            carve the stack, held to a stricter bar
+/agent-fleet -ask                       six workers, one question to the human
+```
+
+The one rule that keeps this from turning into soup: **a lens may add
+constraints, evidence, questions or gates. It may never add scope.** If it makes
+the agent do a different job, it is a second skill pretending to be a lens.
+
+Lenses apply in a fixed phase order and ignore the order you typed them:
+
+```
+-why  ->  -ask  ->  [the skill itself, with -whatwillmattdo at its decisions]  ->  -obsidian
+```
+
+`-why` then `-obsidian` is the loop that makes the whole thing get smarter. This
+run's dig becomes next run's starting context, so nobody pays for the same
+archaeology twice.
+
+Registry and the rules for writing one: [TAGS.md](TAGS.md).
 
 ## Install
 
@@ -88,7 +122,7 @@ remain available when a runtime does not yet expose the universal location.
 
 ## What makes a skill here
 
-Three rules I hold myself to:
+Four rules I hold myself to:
 
 1. **It has to have cost me something.** Every one of these exists because a
    specific failure was expensive. The z-index ladder, the parity checker that
@@ -97,6 +131,18 @@ Three rules I hold myself to:
 2. **The scripts have to run.** Anything in a `scripts/` folder has been executed
    against a real repo, not just written.
 3. **No numbers I did not measure.** Where a skill cites a result, someone ran it.
+4. **No em-dashes.** Rewrite the sentence, never swap the character. Enforced by
+   `./scripts/check-skills.sh`, which also validates skill frontmatter and the
+   lens contract. Run it before opening a pull request.
+
+## Credit
+
+`whatwillmattdo` and the interview machinery inside `right-question` are a
+distillation of [Matt Pocock's skills](https://github.com/mattpocock/skills)
+(MIT). They are a lens over his published judgment, not a replacement for it, and
+they route to his originals when you have them installed. Go read the source.
+
+The em-dash ban is his convention too, and it is a good one.
 
 ## Licence
 
