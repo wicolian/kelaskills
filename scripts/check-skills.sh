@@ -85,5 +85,9 @@ done < <(git ls-files 'skills/*/scripts/*' 'skills/*/*.sh' 'skills/*/*.mjs' 'scr
 echo "  checked $n scripts"
 
 echo
+echo "This gate checks correctness. For description quality, which is a"
+echo "judgement call and not a hard failure, run:"
+echo "  skills/skill-authoring/scripts/lint-descriptions.sh"
+echo
 if [ "$FAIL" = "0" ]; then echo "PASS"; else echo "FAIL"; fi
 exit "$FAIL"
