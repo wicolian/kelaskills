@@ -143,7 +143,7 @@ behind a pointer what only some paths reach.
 A 600-line body because one branch needed depth punishes every other branch. Move
 that branch into `references/` and leave one line naming the file with the
 condition for reading it, so the condition is impossible to miss: "Both sides
-renamed the file? See [references/renames.md](references/renames.md)."
+renamed the file? See `references/renames.md`."
 
 ## Requirements and graceful degradation
 
