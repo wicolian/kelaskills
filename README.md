@@ -55,6 +55,7 @@ kelaskills" and it is the skill that knows how.
 | [**agents-md**](skills/agents-md) | Write the instructions file an agent reads before it changes a codebase. Most are a README with a different name, which is the wrong job. The glossary, the non-negotiables, the surface checklist, and the ways an agent hurts itself here. |
 | [**skill-authoring**](skills/skill-authoring) | Your skill never fires, or fires on everything. The `description` is a trigger, not a description: it is loaded into every conversation whether or not the skill runs, and one detailed enough to be useful on its own means the body never loads. |
 | [**fleet-sync**](skills/fleet-sync) | Several machines, all running agents, all needing the same skills. Do not build a sync system. One git repo of markdown, a little scoping metadata, and a dry run before anything is applied. |
+| [**codex-model-tiers**](skills/codex-model-tiers) | Codex model selection needs distinct Luna/Fast, Terra/standard, and Sol or Astra/Flex behavior without profiles, including a shared `gpt` wrapper and a 1M context window. |
 
 ### Lenses
 
