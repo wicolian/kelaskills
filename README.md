@@ -37,6 +37,13 @@ kelaskills" and it is the skill that knows how.
 | [**converge-worktrees**](skills/converge-worktrees) | A week's work is scattered across several worktrees, branches and open PRs, and it has to land as one pull request per repo without losing the review descriptions already written. Measure first: most "lost" uncommitted work turns out to be already committed somewhere else. |
 | [**file-pr**](skills/file-pr) | Your agent can already open pull requests. It opens ones humans hate. Lead with the problem in the user's own words, title the symptom and not the code, and open a real PR so the reviewers actually run. |
 | [**babysit-pr**](skills/babysit-pr) | Drive a PR to green without letting review feedback triple its size. Act only on feedback newer than the last push, verify every automated finding against source, and refuse scope creep out loud. |
+| [**full-send**](skills/full-send) | "full send": you are not watching. Prove it, review it, file it, babysit it, and merge it once a hard merge gate passes. Ask only through a question tool or a self-DM. |
+| [**full-stop**](skills/full-stop) | "full stop": the same work as full-send, but it stops with the PR ready for you to merge. It never merges. |
+| [**sol-loop**](skills/sol-loop) | One GPT Sol reviewer in a loop: 3 rounds, smallest fix, push back on scope creep, and a PR footer that shows the verdict even when it failed. |
+| [**council**](skills/council) | Independent reviews from models of different providers (Claude and Codex here), scored out of 10, in a table on the PR. |
+| [**takeover**](skills/takeover) | Finish someone else's PR or branch on a new branch, and keep their credit. |
+| [**modernize**](skills/modernize) | An old PR: decide MODERNIZE, REWORK or CLOSE before you touch it. Updates by merge commit, never force push. |
+| [**leaving-pr-comments**](skills/leaving-pr-comments) | Every comment an agent posts for you says so, and still reads like you. |
 
 ### Running agents
 
@@ -188,6 +195,12 @@ distillation of [Matt Pocock's skills](https://github.com/mattpocock/skills)
 they route to his originals when you have them installed. Go read the source.
 
 The em-dash ban is his convention too, and it is a good one.
+
+`full-send`, `full-stop`, `sol-loop`, `council`, `takeover`, `modernize` and
+`leaving-pr-comments` are adapted from Theo Browne's
+[tstack](https://github.com/t3dotgg/tstack) (MIT), and parts of it are merged into
+`file-pr` and `babysit-pr`. The changes fit our rules: no force push of any kind, a
+stricter merge gate, Codex in visible panes, and a two-member council.
 
 ## Licence
 

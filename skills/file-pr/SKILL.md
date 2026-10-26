@@ -115,6 +115,9 @@ The out-of-scope line stops a reviewer assuming a related bug was covered.
 gh pr create --base main --title "<title>" --body-file <path>
 ```
 
+GraphQL rate limit used up? `gh pr create` fails. The REST limit is separate:
+`gh api repos/<owner>/<repo>/pulls -f title=... -f head=... -f base=... -F body=@<file>`.
+
 **Do not pass `--draft` by default.** Draft blocks review bots and often CI, so a
 draft PR looks filed and gets nothing. Draft is only for when the author says
 plainly that they want no review yet. Opening drafts by default is a real and
@@ -133,6 +136,17 @@ Changes produced by <model> running in <harness>.
 This is honest, and later it tells you which setup produces which quality. Some
 harnesses do not expose their own model identity. Say what you actually know
 (`produced by an agent running in <harness>`) rather than guessing a model name.
+
+Repos whose CI rejects AI lines (databrainhq: `Generated with`, a model as
+`Co-authored-by`, `Claude-Session`) get no attribution line. The repo rule wins.
+
+Review footers go just above the attribution line, and always show the verdict,
+also when it is not approved: the `sol-loop` line, or the `council` table.
+
+### 6b. How you proved it
+
+One line: how you proved the change (a reproduction, a test that fails on the old
+code, screenshots from the running product). No proof yet? Say that.
 
 ### 7. Evidence
 
@@ -162,13 +176,20 @@ It is read months later from the merge commit and from release notes. So:
 
 Paths are fine inside a "what to check" line. They must not be the description.
 
+## House rules (ours)
+
+- A PR the user owns opens with one fitting GIF from their themes, the quote, and
+  one line that ties it to the change. Look at the frames before you use it.
+- No box links or local paths in the body. Screenshots go up as GitHub images.
+- Partly adapted from Theo Browne's [tstack](https://github.com/t3dotgg/tstack) (MIT).
+
 ## Write boundary
 
 You may: read the repo, push the branch the user is on, open the pull request.
 
-You may not, without the human asking in that session: merge, close, force-push,
-change the base branch of an existing PR, or open a PR from a branch the user did
-not ask you to ship.
+You may not, without the human asking in that session: merge, close, change the
+base branch of an existing PR, or open a PR from a branch the user did not ask you
+to ship. Force push is never yours, not even with lease.
 
 ## After it is open
 
